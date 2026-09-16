@@ -14,6 +14,7 @@ import java.util.UUID;
 public class UserService {
 
     private final ProfileRepository profileRepository;
+    private final StudentProfileRepository studentProfileRepository;
 
     /**
      * Get or create a profile from JWT claims.
@@ -72,5 +73,32 @@ public class UserService {
     public Profile getProfileById(UUID id) {
         return profileRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile", id));
+    }
+
+    @Transactional
+    public StudentProfileDto updateStudentProfile(UUID userId, StudentProfileDto dto) {
+        Profile profile = getProfileById(userId);
+
+        StudentProfile sp = studentProfileRepository.findById(userId)
+                .orElseGet(() -> StudentProfile.builder().profile(profile).userId(userId).build());
+
+        if (dto.getSkills() != null)
+            sp.setSkills(dto.getSkills());
+        if (dto.getEducation() != null)
+            sp.setEducation(dto.getEducation());
+        if (dto.getInterests() != null)
+            sp.setInterests(dto.getInterests());
+        if (dto.getPreferredDomains() != null)
+            sp.setPreferredDomains(dto.getPreferredDomains());
+        if (dto.getResumeFileId() != null)
+            sp.setResumeFileId(dto.getResumeFileId());
+
+        return StudentProfileDto.from(studentProfileRepository.save(sp));
+    }
+
+    public StudentProfileDto getStudentProfile(UUID userId) {
+        return studentProfileRepository.findById(userId)
+                .map(StudentProfileDto::from)
+                .orElse(new StudentProfileDto());
     }
 }
