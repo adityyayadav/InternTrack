@@ -1,5 +1,6 @@
 package com.internpilot.opportunities;
 
+import com.internpilot.audit.AuditEventService;
 import com.internpilot.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public class OpportunityService {
 
     private final OpportunityRepository opportunityRepository;
+    private final AuditEventService auditEventService;
 
     public Page<OpportunityDto> getAllActiveOpportunities(Pageable pageable) {
         return opportunityRepository.findByIsActiveTrue(pageable)
@@ -41,11 +43,13 @@ public class OpportunityService {
                 .createdBy(adminId)
                 .build();
 
-        return OpportunityDto.from(opportunityRepository.save(opp));
+        Opportunity saved = opportunityRepository.save(opp);
+        auditEventService.record(adminId, "OPPORTUNITY", saved.getId(), "CREATED", "{}");
+        return OpportunityDto.from(saved);
     }
 
     @Transactional
-    public OpportunityDto updateOpportunity(UUID id, OpportunityDto dto) {
+    public OpportunityDto updateOpportunity(UUID id, OpportunityDto dto, UUID adminId) {
         Opportunity opp = opportunityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Opportunity", id));
 
@@ -61,6 +65,8 @@ public class OpportunityService {
         if (dto.getIsActive() != null)
             opp.setActive(dto.getIsActive());
 
-        return OpportunityDto.from(opportunityRepository.save(opp));
+        Opportunity saved = opportunityRepository.save(opp);
+        auditEventService.record(adminId, "OPPORTUNITY", saved.getId(), "UPDATED", "{}");
+        return OpportunityDto.from(saved);
     }
 }

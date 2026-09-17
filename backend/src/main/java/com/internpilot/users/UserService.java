@@ -1,5 +1,6 @@
 package com.internpilot.users;
 
+import com.internpilot.audit.AuditEventService;
 import com.internpilot.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,6 +16,7 @@ public class UserService {
 
     private final ProfileRepository profileRepository;
     private final StudentProfileRepository studentProfileRepository;
+    private final AuditEventService auditEventService;
 
     /**
      * Get or create a profile from JWT claims.
@@ -93,7 +95,9 @@ public class UserService {
         if (dto.getResumeFileId() != null)
             sp.setResumeFileId(dto.getResumeFileId());
 
-        return StudentProfileDto.from(studentProfileRepository.save(sp));
+        StudentProfile saved = studentProfileRepository.save(sp);
+        auditEventService.record(userId, "STUDENT_PROFILE", userId, "UPDATED", "{}");
+        return StudentProfileDto.from(saved);
     }
 
     public StudentProfileDto getStudentProfile(UUID userId) {

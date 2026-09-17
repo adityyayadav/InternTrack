@@ -14,13 +14,13 @@ import java.util.UUID;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
 
-    Page<Notification> findByRecipientIdOrderByCreatedAtDesc(UUID recipientId, Pageable pageable);
+    Page<Notification> findByRecipient_IdOrderByCreatedAtDesc(UUID recipientId, Pageable pageable);
 
-    Page<Notification> findByRecipientIdAndIsReadOrderByCreatedAtDesc(UUID recipientId, boolean isRead, Pageable pageable);
+    Page<Notification> findByRecipient_IdAndIsReadOrderByCreatedAtDesc(UUID recipientId, boolean isRead, Pageable pageable);
 
-    Optional<Notification> findByIdAndRecipientId(UUID id, UUID recipientId);
+    Optional<Notification> findByIdAndRecipient_Id(UUID id, UUID recipientId);
 
-    long countByRecipientIdAndIsReadFalse(UUID recipientId);
+    long countByRecipient_IdAndIsReadFalse(UUID recipientId);
 
     @Modifying
     @Query("UPDATE Notification n SET n.isRead = true WHERE n.recipient.id = :recipientId AND n.isRead = false")

@@ -43,19 +43,19 @@ public class NotificationService {
 
     public Page<NotificationDto> getMyNotifications(UUID recipientId, Boolean unreadOnly, Pageable pageable) {
         Page<Notification> page = (unreadOnly != null && unreadOnly)
-                ? notificationRepository.findByRecipientIdAndIsReadOrderByCreatedAtDesc(recipientId, false, pageable)
-                : notificationRepository.findByRecipientIdOrderByCreatedAtDesc(recipientId, pageable);
+                ? notificationRepository.findByRecipient_IdAndIsReadOrderByCreatedAtDesc(recipientId, false, pageable)
+                : notificationRepository.findByRecipient_IdOrderByCreatedAtDesc(recipientId, pageable);
 
         return page.map(NotificationDto::from);
     }
 
     public long getUnreadCount(UUID recipientId) {
-        return notificationRepository.countByRecipientIdAndIsReadFalse(recipientId);
+        return notificationRepository.countByRecipient_IdAndIsReadFalse(recipientId);
     }
 
     @Transactional
     public NotificationDto markAsRead(UUID id, UUID recipientId) {
-        Notification notification = notificationRepository.findByIdAndRecipientId(id, recipientId)
+        Notification notification = notificationRepository.findByIdAndRecipient_Id(id, recipientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification", id));
 
         notification.setRead(true);

@@ -1,5 +1,6 @@
 package com.internpilot.applications;
 
+import com.internpilot.audit.AuditEventService;
 import com.internpilot.common.exception.ResourceNotFoundException;
 import com.internpilot.opportunities.Opportunity;
 import com.internpilot.opportunities.OpportunityRepository;
@@ -29,6 +30,7 @@ public class ApplicationService {
     private final ApplicationReviewRepository reviewRepository;
     private final NotificationService notificationService;
     private final FacultyAssignmentRepository facultyAssignmentRepository;
+    private final AuditEventService auditEventService;
 
     public Page<ApplicationDto> getStudentApplications(UUID studentId, Pageable pageable) {
         return applicationRepository.findByStudentId(studentId, pageable)
@@ -59,7 +61,9 @@ public class ApplicationService {
                 .coverNote(dto.getCoverNote())
                 .build();
 
-        return ApplicationDto.from(applicationRepository.save(app));
+        Application saved = applicationRepository.save(app);
+        auditEventService.record(studentId, "APPLICATION", saved.getId(), "CREATED", "{}");
+        return ApplicationDto.from(saved);
     }
 
     @Transactional
@@ -78,7 +82,9 @@ public class ApplicationService {
         app.setStatus(ApplicationStatus.SUBMITTED);
         app.setSubmittedAt(Instant.now());
 
-        return ApplicationDto.from(applicationRepository.save(app));
+        Application saved = applicationRepository.save(app);
+        auditEventService.record(studentId, "APPLICATION", saved.getId(), "SUBMITTED", "{}");
+        return ApplicationDto.from(saved);
     }
 
     @Transactional
@@ -104,6 +110,9 @@ public class ApplicationService {
         app.setReviewedAt(Instant.now());
         app.setReviewedBy(facultyId);
 
-        return ApplicationDto.from(applicationRepository.save(app));
+        Application saved = applicationRepository.save(app);
+        auditEventService.record(facultyId, "APPLICATION", saved.getId(), "REVIEWED",
+            "{\"decision\":\"" + dto.getDecision().name() + "\"}");
+        return ApplicationDto.from(saved);
     }
 }

@@ -4,6 +4,7 @@ import com.internpilot.common.response.ApiResponse;
 import com.internpilot.users.ProfileDto;
 import com.internpilot.users.Profile;
 import com.internpilot.users.StudentProfileDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,7 +46,7 @@ public class UserController {
     @PutMapping("/students/me/profile")
     public ResponseEntity<ApiResponse<StudentProfileDto>> updateStudentProfile(
             @AuthenticationPrincipal Jwt jwt,
-            @RequestBody StudentProfileDto dto) {
+            @Valid @RequestBody StudentProfileDto dto) {
         UUID studentId = UUID.fromString(jwt.getSubject());
         return ResponseEntity.ok(ApiResponse.ok(userService.updateStudentProfile(studentId, dto)));
     }

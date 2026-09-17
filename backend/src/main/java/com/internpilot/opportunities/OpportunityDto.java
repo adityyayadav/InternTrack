@@ -2,6 +2,7 @@ package com.internpilot.opportunities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +20,11 @@ public class OpportunityDto {
     private UUID id;
 
     @NotBlank(message = "Title is required")
+    @Size(max = 255, message = "Title must be at most 255 characters")
     private String title;
 
     @NotBlank(message = "Organization is required")
+    @Size(max = 255, message = "Organization must be at most 255 characters")
     private String organization;
 
     @NotBlank(message = "Description is required")
@@ -30,9 +33,11 @@ public class OpportunityDto {
     private String requiredSkills;
 
     @NotBlank(message = "Location is required")
+    @Size(max = 255, message = "Location must be at most 255 characters")
     private String location;
 
     @NotBlank(message = "Work mode is required")
+    @Size(max = 50, message = "Work mode must be at most 50 characters")
     private String workMode;
 
     private String duration;

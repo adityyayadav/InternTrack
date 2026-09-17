@@ -51,7 +51,7 @@ public class ApplicationController {
     @PostMapping("/{id}/submit")
     public ResponseEntity<ApiResponse<ApplicationDto>> submitApplication(
             @PathVariable UUID id,
-            @RequestBody ApplicationDto dto,
+            @Valid @RequestBody ApplicationDto dto,
             @AuthenticationPrincipal Jwt jwt) {
         UUID studentId = UUID.fromString(jwt.getSubject());
         return ResponseEntity.ok(ApiResponse.ok(applicationService.submitApplication(id, studentId, dto)));
@@ -61,7 +61,7 @@ public class ApplicationController {
     @PostMapping("/faculty/{id}/decision")
     public ResponseEntity<ApiResponse<ApplicationDto>> reviewApplication(
             @PathVariable UUID id,
-            @RequestBody ApplicationReviewDto dto,
+            @Valid @RequestBody ApplicationReviewDto dto,
             @AuthenticationPrincipal Jwt jwt) {
         UUID facultyId = UUID.fromString(jwt.getSubject());
         return ResponseEntity.ok(ApiResponse.ok(applicationService.reviewApplication(id, facultyId, dto)));

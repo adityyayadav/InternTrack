@@ -1,0 +1,29 @@
+SUPABASE_JWT_ISSUER: http://localhost:8081/auth/v1
+SUPABASE_URL: http://localhost:8081
+SUPABASE_DB_HOST: localhost
+SUPABASE_DB_PORT: 5432
+SUPABASE_DB_NAME: test
+SUPABASE_DB_USER: test
+SUPABASE_DB_PASSWORD: test
+SUPABASE_SERVICE_ROLE_KEY: test-only-key
+
+app:
+  cors:
+    allowed-origins: http://localhost:5173
+  supabase:
+    url: http://localhost:8081
+    service-role-key: test-only-key
+    storage-bucket: test-bucket
+  ai:
+    api-key: test-only-key
+
+spring:
+  flyway:
+    enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none

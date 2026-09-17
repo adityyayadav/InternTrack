@@ -49,7 +49,9 @@ public class OpportunityController {
     @PutMapping("/admin/opportunities/{id}")
     public ResponseEntity<ApiResponse<OpportunityDto>> updateOpportunity(
             @PathVariable UUID id,
-            @Valid @RequestBody OpportunityDto dto) {
-        return ResponseEntity.ok(ApiResponse.ok(opportunityService.updateOpportunity(id, dto)));
+            @Valid @RequestBody OpportunityDto dto,
+            @AuthenticationPrincipal Jwt jwt) {
+        UUID adminId = UUID.fromString(jwt.getSubject());
+        return ResponseEntity.ok(ApiResponse.ok(opportunityService.updateOpportunity(id, dto, adminId)));
     }
 }
