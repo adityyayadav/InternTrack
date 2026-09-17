@@ -69,7 +69,7 @@ public class NotificationService {
 
     @Transactional
     public void deleteNotification(UUID id, UUID recipientId) {
-        Notification notification = notificationRepository.findByIdAndRecipientId(id, recipientId)
+        Notification notification = notificationRepository.findByIdAndRecipient_Id(id, recipientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification", id));
 
         notificationRepository.delete(notification);
