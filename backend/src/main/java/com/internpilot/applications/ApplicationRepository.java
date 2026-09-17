@@ -16,4 +16,17 @@ public interface ApplicationRepository extends JpaRepository<Application, UUID> 
     boolean existsByStudentIdAndOpportunityId(UUID studentId, UUID opportunityId);
 
     Optional<Application> findByIdAndStudentId(UUID id, UUID studentId);
+
+    long countByStudentId(UUID studentId);
+
+    long countByStudentIdAndStatus(UUID studentId, ApplicationStatus status);
+
+    java.util.List<Application> findByStudentIdAndStatus(UUID studentId, ApplicationStatus status);
+
+    long countByStudentIdInAndStatusIn(java.util.Collection<UUID> studentIds, java.util.Collection<ApplicationStatus> statuses);
+
+    long countByStatus(ApplicationStatus status);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT a.student.id) FROM Application a WHERE a.status = com.internpilot.applications.ApplicationStatus.APPROVED")
+    long countDistinctPlacedStudents();
 }

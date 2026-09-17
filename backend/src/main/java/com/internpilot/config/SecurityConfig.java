@@ -43,11 +43,11 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Admin endpoints
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/dashboard/admin/**", "/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         // Faculty endpoints
-                        .requestMatchers("/api/v1/faculty/**").hasAnyAuthority("ROLE_FACULTY", "ROLE_ADMIN")
+                        .requestMatchers("/api/dashboard/faculty/**", "/api/v1/faculty/**").hasAnyAuthority("ROLE_FACULTY", "ROLE_ADMIN")
                         // All other API endpoints require authentication
-                        .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers("/api/dashboard/**", "/api/ai/**", "/api/v1/**").authenticated()
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(new SupabaseJwtAuthConverter())));

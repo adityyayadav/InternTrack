@@ -3,6 +3,10 @@ package com.internpilot.applications;
 import com.internpilot.common.exception.ResourceNotFoundException;
 import com.internpilot.opportunities.Opportunity;
 import com.internpilot.opportunities.OpportunityRepository;
+import com.internpilot.notifications.NotificationService;
+import com.internpilot.notifications.NotificationType;
+import com.internpilot.users.FacultyAssignment;
+import com.internpilot.users.FacultyAssignmentRepository;
 import com.internpilot.users.Profile;
 import com.internpilot.users.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,6 +27,8 @@ public class ApplicationService {
     private final OpportunityRepository opportunityRepository;
     private final ProfileRepository profileRepository;
     private final ApplicationReviewRepository reviewRepository;
+    private final NotificationService notificationService;
+    private final FacultyAssignmentRepository facultyAssignmentRepository;
 
     public Page<ApplicationDto> getStudentApplications(UUID studentId, Pageable pageable) {
         return applicationRepository.findByStudentId(studentId, pageable)
